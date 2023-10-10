@@ -6,3 +6,5 @@ const obj = {
 const val = JSON.parse(obj.age)
 
 console.log(val)
+
+console.log(JSON.stringify(obj))
