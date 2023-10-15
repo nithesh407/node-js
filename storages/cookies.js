@@ -6,3 +6,6 @@ document.cookie = `lastName=Smith; expires=${new Date(
 ).toUTCString()}`
 
 console.log(document.cookie)
+
+
+//instead of this use js cookies

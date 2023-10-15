@@ -88,13 +88,16 @@ app.delete('/:email',(req,res)=>{
 
 app.post('/login',(req,res)=>{
     const user={
-        username:req.query.name,
-        email:req.query.email
+        username:req.body.name,
+        email:req.body.email
     }
+    console.log(JSON.stringify(user ));
     jwt.sign(user,'secretkey',(err,token)=>{
         res.json({
             token,
+            user:user
         })
+        
     })
 })
 
