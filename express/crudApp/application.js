@@ -1,5 +1,5 @@
 const express = require('express')
-
+const jwt = require('jsonwebtoken')
 const app = express();
 
 app.use(express.json())
@@ -83,4 +83,47 @@ app.delete('/:email',(req,res)=>{
     }
 })
 
+
+//authenticating using jwt token
+
+app.post('/login',(req,res)=>{
+    const user={
+        username:req.query.name,
+        email:req.query.email
+    }
+    jwt.sign(user,'secretkey',(err,token)=>{
+        res.json({
+            token,
+        })
+    })
+})
+
+
+//verifying the token 
+
+app.post('/dashboard',verifytoken,(req,res)=>{
+    jwt.verify(req.token,'secretkey',(err,authdata)=>{
+        if(err){
+            res.send(403)
+        }
+        else{
+            res.json({
+                message:"welcome to dashboard",
+                authdata
+            })
+        }
+    })
+})
+
+function verifytoken(req,res,next) {
+    const bearerHeader = req.headers['authorization']
+    if(typeof bearerHeader != 'undefined'){
+        const bearerToken = bearerHeader.split(' ')[1]
+        req.token=bearerToken
+        next()
+    }
+    else{
+        res.sendStatus(403);
+    }
+}
 app.listen(3000)
