@@ -1,15 +1,24 @@
 const fs = require('fs');
 const express = require('express');
-
+const morgan = require('morgan');
 const app = express();
+
+app.use(morgan('dev'))
+
 app.use(express.json()); //middle ware between the request and the response
-const port=8000;
+
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    next();
+})
+
 
 const tours= JSON.parse( fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`))
 
 const getAllTours = (req, res) =>{
     res.status(200).json({
         status:'success',
+        requestedAt: req.requestTime,
         results:tours.length,
         data:{
             tours: tours
@@ -36,7 +45,15 @@ const createTour = (req, res) =>{
 const getTour=(req,res)=>{
     const tourId = req.params.tourId*1; //changes string to number
     const tour= tours.find(ele => ele.id === tourId);
-    if(!tour){
+    if(tour){
+        res.status(200).json({
+            status:'success',
+            data:{
+                tour:tour
+            }
+        })
+      
+    }else{
         res.status(404).json({
             status:'error',
             data:{
@@ -44,12 +61,7 @@ const getTour=(req,res)=>{
             }
         })
     }
-    res.status(200).json({
-        status:'success',
-        data:{
-            tour:tour
-        }
-    })
+    
 }
 
 app.route('/api/v1/tours')
@@ -62,6 +74,7 @@ app.route('/api/v1/tours/:tourId')
 
 
 
+const port=8000;
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
 });
