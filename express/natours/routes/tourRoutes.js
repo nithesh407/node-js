@@ -7,7 +7,7 @@ router.param('tourId',checkTourId); //param middleware
 
 router.route('/')
     .get(getAllTours)
-    .post(checkBody,createTour)
+    .post(checkBody,createTour) //chaining middlewares
 
 router.route('/:tourId')
     .get(getTour)

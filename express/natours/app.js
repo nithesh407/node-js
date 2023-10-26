@@ -5,7 +5,7 @@ const app = express();
 const userRouter = require('./routes/userRoutes')
 const tourRouter = require('./routes/tourRoutes')
 app.use(morgan('dev'))
-
+app.use(express.static(`${__dirname}/public`))
 app.use(express.json()); //middle ware between the request and the response
 
 
